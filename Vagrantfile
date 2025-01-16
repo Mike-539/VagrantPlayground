@@ -29,4 +29,34 @@ Vagrant.configure("2") do |config|
       curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
       echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
       apt-get update
-      apt-get install -y kube
+      apt-get install -y kubelet kubeadm kubectl
+      apt-mark hold kubelet kubeadm kubectl
+    SHELL
+  end
+
+  # Worker Nodes
+  (1..2).each do |i|
+    config.vm.define "node0#{i}" do |node|
+      node.vm.box = "ubuntu/trusty64"
+      node.vm.box_check_update = false
+      node.vm.hostname = "worker-node0#{i}"
+      node.vm.network "private_network", ip: "10.0.100.2#{i}"
+      node.vm.provider "virtualbox" do |vb|
+        vb.memory = 2048
+        vb.cpus = 1
+      end
+      node.vm.provision "shell", inline: <<-SHELL
+        apt-get update
+        apt-get install -y docker.io
+        systemctl start docker
+        systemctl enable docker
+        apt-get install -y apt-transport-https curl
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+        apt-get update
+        apt-get install -y kubelet kubeadm kubectl
+        apt-mark hold kubelet kubeadm kubectl
+      SHELL
+    end
+  end
+end
