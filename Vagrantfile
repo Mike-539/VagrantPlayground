@@ -3,7 +3,7 @@ Vagrant.configure("2") do |config|
   
   config.vm.define "k8s-master" do |master|
     master.vm.hostname = "k8s-master"
-    master.vm.network "private_network", type: "dhcp"
+    master.vm.network "private_network", type: "dhcp"  # Host-Only Network
     master.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
       vb.cpus = 2
@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "k8s-worker1" do |worker|
     worker.vm.hostname = "k8s-worker1"
-    worker.vm.network "private_network", type: "dhcp"
+    worker.vm.network "private_network", type: "dhcp"  # Host-Only Network
     worker.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
       vb.cpus = 2
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "k8s-worker2" do |worker|
     worker.vm.hostname = "k8s-worker2"
-    worker.vm.network "private_network", type: "dhcp"
+    worker.vm.network "private_network", type: "dhcp"  # Host-Only Network
     worker.vm.provider "virtualbox" do |vb|
       vb.memory = "2048"
       vb.cpus = 2
